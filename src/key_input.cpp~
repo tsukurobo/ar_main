@@ -1,0 +1,79 @@
+#include "ros/ros.h"
+#include "std_msgs/Char.h"
+using namespace std;
+
+std_msgs::Char key_msg;
+int main(int argc, char **argv)
+{
+  ros::init(argc, argv, "tr_key");
+  // initでROSを初期化し、tr_keyという名前をノードにつける                        
+  // 同じ名前のノードが複数あるとだめなので、ユニークな名前をつける                 
+
+  ros::NodeHandle nh;
+  // ノードハンドラの作成。ハンドラは必要時に起動される。                         
+
+  ros::Publisher  tr_key_pub = nh.advertise<std_msgs::Char>("tr_key",10);
+  // pub= nh.advertise<geometry_msgs::Twist>("/cmd_vel_mux/input/teleop", 10);
+  // マスターにstd_msgs::Charのデータを送ることを伝える                         
+  // マスターはtr_key(1番目の引数）を購読する                
+  // 全てのノードにトピックができたことを知らせる(advertise)。                          
+  // 2番目の引数はデータのバッファサイズ        
+
+  ros::Rate rate(10);
+  // ループの頻度を設定。この場合は10Hz、1秒間に10回数、1ループ100ms。                  
+
+                                        
+
+  std::cout << "f: forward, b: backward, r: right, l:left" << std::endl;
+
+  while (ros::ok()) // このノードが使える間は無限ループ                                 
+    {
+      char key;  // 入力キーの値                                                        
+
+      cin >> key;
+      cout << key << endl;
+
+      switch (key) {
+	// alphabet only.
+      case 'a': key_msg.data  = 'a'; break;
+      case 'b': key_msg.data  = 'b'; break;
+      case 'c': key_msg.data  = 'c'; break;
+      case 'd': key_msg.data  = 'd'; break;
+      case 'e': key_msg.data  = 'e'; break;
+      case 'f': key_msg.data  = 'f'; break;
+      case 'g': key_msg.data  = 'g'; break;
+      case 'h': key_msg.data  = 'h'; break;
+      case 'i': key_msg.data  = 'i'; break;
+      case 'j': key_msg.data  = 'j'; break;
+      case 'k': key_msg.data  = 'k'; break;
+      case 'l': key_msg.data  = 'l'; break;
+      case 'm': key_msg.data  = 'm'; break;
+      case 'n': key_msg.data  = 'n'; break;
+      case 'o': key_msg.data  = 'o'; break;
+      case 'p': key_msg.data  = 'p'; break;
+      case 'q': key_msg.data  = 'q'; break;
+      case 'r': key_msg.data  = 'r'; break;
+      case 's': key_msg.data  = 's'; break;
+      case 't': key_msg.data  = 't'; break;
+      case 'u': key_msg.data  = 'u'; break;
+      case 'v': key_msg.data  = 'v'; break;
+      case 'w': key_msg.data  = 'w'; break;
+      case 'x': key_msg.data  = 'x'; break;
+      case 'y': key_msg.data  = 'y'; break;
+      case 'z': key_msg.data  = 'z'; break;
+      }
+
+      if (key_msg.data != '/0')
+	{
+	  tr_key_pub.publish(key_msg); // メッセージを送信
+	}
+      ros::spinOnce();  // コールバック関数を呼ぶ                                       
+      key_msg.data = '\0'; //初期化
+      rate.sleep();     // 指定した周期でループするよう寝て待つ                         
+
+     
+    }
+
+  return 0;
+}
+

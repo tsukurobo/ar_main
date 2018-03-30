@@ -1,0 +1,23 @@
+#ifndef   CONF_HPP
+#define   CONF_HPP
+
+
+enum Status {
+  PREPARE = 0,
+  STARTTOPASS1 = 1,
+  WAITPASS1 = 11,
+  PASS1 = 21,
+};
+
+enum Tasks {
+  CORRECTSPACE_BEGIN = 1,
+  CORRECTSPACE_END = 2,
+  ODOMRUN_BEGIN = 3,
+  ODOMRUN_END = 4,
+  ODOMRUN_LOGGING_BEGIN = 5,
+  ODOMRUN_LOGGING_END = 6,
+};
+
+
+
+#endif  //CONF_HPP
