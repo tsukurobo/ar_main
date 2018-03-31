@@ -1,6 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "std_msgs/Int8.h"
+#include "std_msgs/Char.h"
 #include <sstream>
 #include "conf.h"
 
@@ -22,41 +23,55 @@ bool split = true;
 //        false is auto run.
 bool logging = true;
 
-int owner = 0; // 0 means owner is self.
+bool wait = false; 
 
 
 int state = PREPARE;
 bool odom_end = false;
 
 
+std_msgs::Int8 task_data; // task
+
+int nextTask(int index = -1) {
+  static int i = 1;
+  if (index != -1) {
+    i = index;
+  }
+  return taskFlow[i++];
+}
+
 
 // ====================ros callbacks====================
+void keyCallback(const std_msgs::Char::ConstPtr& m) {
+  char c = m->data;
+  ROS_INFO("kcb%c", c);
+  if (c == 's'){
+    //start
+    state = nextTask(1);
+  }
+}
+
 void taskCallback(const std_msgs::Int8::ConstPtr& m) {
   int r = m->data;
   if (r == CORRECTSPACE_END) {
-    owner = 0;
+    wait = false;
   } else if (r == ODOMRUN_END) {
-    owner = 0;
+    wait = false;
   } else if (r == ODOMRUN_LOGGING_END) {
-    owner = 0;
+    wait = false;
   }
 }
 
 
 
 // ====================ros settings====================
-ros::NodeHandle n;
-ros::Publisher task_pub = n.advertise<std_msgs::Int8>("task", 1000);
-ros::Subscriber task_sub = n.subscribe("task", 1000, taskCallback);
+ros::Publisher task_pub;
+ros::Subscriber task_sub;
+ros::Subscriber key_sub;
 
 
 
 // ==================== sub routines ====================
-
-int nextTask() {
-  static int i = 1;
-  return taskFlow[i++];
-}
 
 bool correctSpace() {
   // @return bool: if true, continue, if false, finish.
@@ -64,15 +79,15 @@ bool correctSpace() {
   static int mode = 0;
   if (mode==0) {
     // begin
-    std_msgs::Int8 c;
-    c.data = CORRECTSPACE_BEGIN;
-    task_pub.publish(c);
+    task_data.data = CORRECTSPACE_BEGIN;
+    task_pub.publish(task_data);
     mode = 1;
     return true;
   } else if (mode == 1) {
     // check end
-    if (owner == 0) {
+    if (!wait) {
       mode = 0;
+      state = nextTask();
       return false;
     }
   } else {
@@ -82,23 +97,47 @@ bool correctSpace() {
 
 bool odomRun() {
   // @return bool: if true, continue, if false, finish.
+  
   if (logging) {
-    ROS_INFO("odom run (logging) \n");
+    // logging
+    static int mode = 0;
+    if (mode == 0){
+      ROS_INFO("odom run (logging) \n");
+      task_data.data = ODOMRUN_LOGGING_BEGIN;
+      task_pub.publish(task_data);
+      mode = 1;
+      wait = true;
+      return true;
+    } else if (mode == 1) {
+      // wait
+      if (!wait) {
+	// end
+	mode = 0;
+	return false;
+      } else {
+	return true;
+      }
+    }
   } else {
+    // playing
     ROS_INFO("odom run (play) \n");
   }
 }
 
 // stages
 void startToPass1() {
-  ROS_INFO("start to pass1\n");
   static int mode = 0;
   if (mode == 0) {
-    if(!odomRun()){
+      ROS_INFO("start to pass1\n");
       mode = 1;
-    }
   } else if (mode == 1) {
+    if (!odomRun()) {
+      //end
+      mode = 2;
+    }
+  } else if (mode == 2) {
     if(!correctSpace()){
+      mode = 0;
       state = nextTask();
     }
   }
@@ -139,11 +178,17 @@ void task() {
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "main");
+  ros::NodeHandle n;
+  task_pub = n.advertise<std_msgs::Int8>("task", 1000);
+  key_sub = n.subscribe("key", 1000, keyCallback);
+  task_sub = n.subscribe("task", 1000, taskCallback);
+  
   ros::Rate loop_rate(10);
 
   while (ros::ok()) {
     
     task();
+    //odomRun();
     ros::spinOnce();
     loop_rate.sleep();
   }

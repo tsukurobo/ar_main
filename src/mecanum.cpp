@@ -19,8 +19,7 @@ enum Modes {
 int mode = JOY;
 
 // publishers
-ros::NodeHandle n;
-ros::Publisher pub = n.advertise<std_msgs::Int8MultiArray>("mecanum_motors", 100);
+ros::Publisher pub;
 
 
 //このプログラムではxboxのコントローラをつかいました。よってjoyの配列の値が少々異なります。
@@ -151,14 +150,14 @@ void taskCallback(const std_msgs::Int8::ConstPtr& m) {
 
 
 
-// subscriptions
-ros::Subscriber joy = n.subscribe("joy",1000,joyCallback);
-ros::Subscriber task = n.subscribe("task",1000,taskCallback);
-
-
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "mecanum");
+  ros::NodeHandle n;
+  pub = n.advertise<std_msgs::Int8MultiArray>("mecanum_motors", 100);
+  ros::Subscriber joy = n.subscribe("joy",1000,joyCallback);
+  ros::Subscriber task = n.subscribe("task",1000,taskCallback);
+  
   ros::Rate loop_rate(10);
   while (ros::ok())
     {

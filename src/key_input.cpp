@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "tr_key");
   ros::NodeHandle nh;
-  ros::Publisher  tr_key_pub = nh.advertise<std_msgs::Char>("key_input",10);
+  ros::Publisher  tr_key_pub = nh.advertise<std_msgs::Char>("key",10);
   ros::Rate rate(10);
   std::cout << "tr_key setup" << std::endl;
 
