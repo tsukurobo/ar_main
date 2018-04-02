@@ -55,7 +55,7 @@ int w[5],max,sp,tn,m,t;
 std_msgs::Int8MultiArray array;
 
 
-void calcMotorPower(int vertical, int horizontal, int turn) {
+void calcMotorPower(float vertical, float horizontal, float turn) {
   /**
    * @param vertical: -1~1
    * @param horizontal: -1~1

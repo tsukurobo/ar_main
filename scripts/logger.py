@@ -7,7 +7,7 @@ from std_msgs.msg import Int8
 from std_msgs.msg import Int8MultiArray
 from sensor_msgs.msg import Joy
 from tasks import Tasks
-
+from datetime import datetime
     
 f = None # file
 arr = [0,0,0,0] # [m0, m1, m2, m3]
@@ -31,8 +31,9 @@ def task_callback(data):
     global f
     if r == Tasks.ODOMRUN_LOGGING_BEGIN:
         print 'start logging'
+        timestr = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
         #f = open('odom.txt', 'a') # xxx rename...
-        f = open(os.path.expanduser('~/catkin_ws/src/ar_main/scripts/odom.txt'), 'a')
+        f = open(os.path.expanduser(str('~/catkin_ws/src/ar_main/scripts/'+timestr+'.txt')), 'a')
         print f
         
 def value_callback(data):
