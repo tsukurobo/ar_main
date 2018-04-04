@@ -6,7 +6,7 @@ from std_msgs.msg import String
 from std_msgs.msg import Int8
 from std_msgs.msg import Int8MultiArray
 from sensor_msgs.msg import Joy
-from tasks import Tasks
+from conf import Tasks
 from datetime import datetime
     
 f = None # file

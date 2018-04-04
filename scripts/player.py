@@ -5,7 +5,7 @@ import csv
 from std_msgs.msg import String
 from std_msgs.msg import Int8
 from std_msgs.msg import Int8MultiArray
-from tasks import Tasks
+from conf import Tasks
 import os
 
 task_pub = rospy.Publisher('task', Int8, queue_size=10)
@@ -16,8 +16,8 @@ i = 0
 
 def task_callback(data):    
     r = data.data
-    if r == Tasks.ODOMRUN_BEGIN:
-        print 'start mechanum play'
+    if r == Tasks.ODOMRUN_BEGIN_STARTTOPASS1:
+        print 'start mechanum play STARTTOPASS1'
         #f = open('odom.txt', 'a') # xxx rename...
         loadFile('odom.txt')
         
