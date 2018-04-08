@@ -11,7 +11,19 @@ static int taskFlow[1000] = {
   PREPARE,
   STARTTOPASS1,
   WAITPASS1,
-  PASS1
+  PASS1,
+  PASS1TOSHOT1,
+  SHOT1,
+  SHOT1TOPASS2,
+  WAITPASS2,
+  PASS2,
+  PASS2TOSHOT2,
+  SHOT2,
+  SHOT2TOPASS3,
+  WAITPASS3,
+  PASS3,
+  PASS3TOSHOT3,
+  SHOT3,  
 };
 
 
@@ -62,14 +74,10 @@ void taskCallback(const std_msgs::Int8::ConstPtr& m) {
   }
 }
 
-
-
 // ====================ros settings====================
 ros::Publisher task_pub;
 ros::Subscriber task_sub;
 ros::Subscriber key_sub;
-
-
 
 // ==================== sub routines ====================
 
@@ -95,12 +103,12 @@ bool correctSpace() {
   }
 }
 
-bool odomRun() {
+bool odomRun(int taskData) {
+  // @param taskData: data of the task from conf.h
   // @return bool: if true, continue, if false, finish.
-  
+  static int mode = 0;  
   if (logging) {
     // logging
-    static int mode = 0;
     if (mode == 0){
       ROS_INFO("odom run (logging) \n");
       task_data.data = ODOMRUN_LOGGING_BEGIN;
@@ -120,7 +128,24 @@ bool odomRun() {
     }
   } else {
     // playing
-    ROS_INFO("odom run (play) \n");
+    if (mode == 0){
+      ROS_INFO("odom run (play) \n");
+      task_data.data = taskData;
+      task_pub.publish(task_data);
+      mode = 1;
+      wait = true;
+      return true;
+    } else if (mode == 1) {
+      // wait
+      if (!wait) {
+	// end
+	mode = 0;
+	return false;
+      } else {
+	return true;
+      }
+    }
+    
   }
 }
 
@@ -131,7 +156,7 @@ void startToPass1() {
       ROS_INFO("start to pass1\n");
       mode = 1;
   } else if (mode == 1) {
-    if (!odomRun()) {
+    if (!odomRun(STARTTOPASS1)) {
       //end
       mode = 2;
     }
@@ -140,8 +165,7 @@ void startToPass1() {
       mode = 0;
       state = nextTask();
     }
-  }
-  
+  }  
 }
 
 void waitPass1() {
@@ -151,8 +175,55 @@ void waitPass1() {
 
 void pass1() {
   ROS_INFO("pass1\n");
-  //
-  
+  //  
+}
+
+void pass1ToShot1() {
+
+}
+
+void shot1() {
+
+}
+
+void shot1ToPass2() {
+
+}
+
+void waitPass2() {
+
+}
+
+void pass2() {
+
+}
+
+void pass2ToShot2() {
+
+}
+
+void shot2() {
+
+}
+
+void shot2ToPass3() {
+
+}
+
+void waitPass3() {
+
+}
+
+void pass3() {
+
+}
+
+void pass3ToShot3() {
+
+}
+
+void shot3() {
+
 }
 
 void chatterCallback(const std_msgs::String::ConstPtr& msg)
@@ -169,7 +240,31 @@ void task() {
     waitPass1();
   } else if (state == PASS1) {
     pass1();
-  }
+  } else if (state == PASS1TOSHOT1) {
+    pass1ToShot1();
+  } else if (state == SHOT1) {
+    shot1();
+  } else if (state == SHOT1TOPASS2) {
+    shot1ToPass2();
+  } else if (state == WAITPASS2) {
+    waitPass2();
+  } else if (state == PASS2) {
+    pass2();
+  } else if (state == PASS2TOSHOT2) {
+    pass2ToShot2();
+  } else if (state == SHOT2) {
+    shot2();
+  } else if (state == SHOT2TOPASS3) {
+    shot2ToPass3();
+  } else if (state == WAITPASS3) {
+    waitPass3();
+  } else if (state == PASS3) {
+    pass3();
+  } else if (state == PASS3TOSHOT3) {
+    pass3ToShot3();
+  } else if (state == SHOT3) {
+    shot3();
+  }  
 }
 
 

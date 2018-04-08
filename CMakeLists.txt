@@ -208,3 +208,6 @@ target_link_libraries(key_input ${catkin_LIBRARIES})
 
 add_executable(mecanum src/mecanum.cpp)
 target_link_libraries(mecanum ${catkin_LIBRARIES})
+
+add_executable(odom_logger src/odom_logger.cpp)
+target_link_libraries(odom_logger ${catkin_LIBRARIES})

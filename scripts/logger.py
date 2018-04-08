@@ -12,14 +12,16 @@ from datetime import datetime
 f = None # file
 arr = [0,0,0,0] # [m0, m1, m2, m3]
 pub = rospy.Publisher('task', Int8, queue_size=10)
-endButtonIndex = 0
+endButtonIndex = 1
 
 def joy_callback(data):
     # check finish
-    print 'jc'
     if (data.buttons[endButtonIndex] == 1):
         print 'end logging'
-        pub.publish(Int8(Tasks.ODOMRUN_LOGGING_END))
+        d = Int8(data=Tasks.ODOMRUN_LOGGING_END)
+        #pub.publish(d)
+        print Tasks.ODOMRUN_LOGGING_END
+        pub.publish(Tasks.ODOMRUN_LOGGING_END)
         if f:
             f.close()
         else:
@@ -54,6 +56,8 @@ def logger():
     rospy.Subscriber("task", Int8, task_callback)
     rospy.Subscriber("mecanum_motors", Int8MultiArray, value_callback)
     rospy.Subscriber("joy", Joy, joy_callback)
+    print "push contoller 2 button(index is 1), logging ends."
+
     r = rospy.Rate(10) #100hz
     while not rospy.is_shutdown():
         if f:

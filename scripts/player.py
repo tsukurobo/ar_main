@@ -9,7 +9,7 @@ from conf import Tasks
 import os
 
 task_pub = rospy.Publisher('task', Int8, queue_size=10)
-fileName = "odom.txt"
+fileName = "2018-04-08-20-20-31.txt"#"2018-04-08-20-16-37.txt"#"odom.txt"
 lines = []
 arr = []
 i = 0
@@ -34,7 +34,7 @@ def player():
     pub = rospy.Publisher('mecanum_motors', Int8MultiArray, queue_size=10)
     rospy.init_node('player', anonymous=True)
     r = rospy.Rate(10) # 10hz
-    loadFile('odom.txt')
+    loadFile(fileName)
     global i
     global lines
 #    print lines
