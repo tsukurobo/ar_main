@@ -211,3 +211,6 @@ target_link_libraries(mecanum ${catkin_LIBRARIES})
 
 add_executable(odom_logger src/odom_logger.cpp)
 target_link_libraries(odom_logger ${catkin_LIBRARIES})
+
+add_executable(servo_handler src/servo_handler.cpp)
+target_link_libraries(servo_handler ${catkin_LIBRARIES})
