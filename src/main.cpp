@@ -7,7 +7,21 @@
 
 
 // ====================definitions====================
-static int taskFlow[1000] = {
+// split: if true, go to next routine.
+//        false is for debugging.
+bool split = true;
+
+// logging: if true, logging the move.
+//        false is auto run.
+bool logging = true;
+
+bool wait = false; 
+
+
+int state = PREPARE;
+bool odom_end = false;
+
+static const int taskFlow[1000] = {
   PREPARE,
   STARTTOPASS1,
   WAITPASS1,
@@ -27,19 +41,6 @@ static int taskFlow[1000] = {
 };
 
 
-// split: if true, go to next routine.
-//        false is for debugging.
-bool split = true;
-
-// logging: if true, logging the move.
-//        false is auto run.
-bool logging = true;
-
-bool wait = false; 
-
-
-int state = PREPARE;
-bool odom_end = false;
 
 
 std_msgs::Int8 task_data; // task

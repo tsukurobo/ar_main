@@ -261,3 +261,84 @@ int main(int argc, char **argv)
 
   return 0;
 }
+
+
+
+
+/*
+
+// =====圧力をかける。=====
+// 圧力をかける
+h open;
+delay(500);
+b open;
+delay(500);
+f open;
+delay(1000);
+h, f close;// 圧力を止める。
+delay(500);
+e open
+
+// result, b,e is opening, other close. -> tz1へ。
+
+
+// ===== tz1の射出 =====
+//at tz1
+d open;    // shot
+delay(5000);
+d, e close;  // shot done
+delay(500);
+h open;
+delay(500);
+f open; // 構える位置に戻す。
+delay(3000);
+f, h close; // 戻った
+delay(500);
+e open; b close; // 0.45mpの圧力を閉じて排気の用意
+delay(500);
+# a open;  // 排気
+# delay(1500);
+# a close; // 排気完了
+# delay(500);
+c open;  // 0.55mpの圧力を準備。 = tz2の準備完了。
+// e, c open, other close; -> tz2
+
+// ===== tz2の射出 =====
+d open; //shot
+delay(5000);
+d close; e close; //shot done
+delay(500);
+h open; // エアシリンダの排気用意
+delay(500);
+f open; // エアシリンダを初期位置に戻す。
+delay(3000);
+f close; // エアシリンダを初期位置に戻すが完了
+delay(500);
+h close; e open; c close; // h closeで排気をやめる。 e openでエアシリンダの排気用意。 cは0.55mpのタンクを閉じる。
+delay(500);
+# a open; // 0.55mpになっているのをリセット。
+# delay(500);
+# a close; //リセット完了
+# delay(500);
+g open; // 0.71mp(tz3用に全体を調整)=tz3に投げる用意が完了。
+delay(500);
+// e, g open, other close -> tz3
+
+
+// ===== tz3の射出 =====
+d open; // shot
+delay(5000);
+d close; // shot done
+delay(500);
+e close; h open; // eで排気を止める。 hで腕を曲げる排気の用意。
+delay(500);
+f open; // 腕を初期位置に戻す。
+delay(3000);
+f close; // 腕の位置初期化完了
+delay(500);
+e open;
+
+done;;;
+
+
+ */
