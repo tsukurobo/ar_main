@@ -33,7 +33,7 @@ void servoDegCB(const std_msgs::Int16MultiArray& array)
 {
   int index = array.data[0];
   int deg = array.data[1];
-  servos[index].attach(deg);
+  servos[index].write(deg);
 }
 ros::Subscriber<std_msgs::Int16MultiArray>sub("servo_deg",&servoDegCB);
 

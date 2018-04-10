@@ -1,6 +1,14 @@
 #ifndef   CONF_HPP
 #define   CONF_HPP
 
+enum ServoStatus {
+  SERVO_WAIT = 1,
+  SERVO_PREPARE = 2,
+  SERVO_TZ1SHOT = 3,
+  SERVO_TZ2SHOT = 4,
+  SERVO_TZ3SHOT = 5
+};
+
 enum Status {
   PREPARE = 0,
   STARTTOPASS1 = 1,
