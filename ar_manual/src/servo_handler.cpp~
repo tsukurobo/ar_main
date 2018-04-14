@@ -1,0 +1,13 @@
+#include "ros/ros.h"
+#include <stdlib.h>
+#include <math.h>
+#include "std_msgs/Int8.h"
+#include "sensor_msgs/Joy.h"
+#include "std_msgs/MultiArrayLayout.h"
+#include "std_msgs/MultiArrayDimension.h"
+#include "std_msgs/Int16MultiArray.h"
+
+
+ros::Publisher pub;
+std_msgs::Int16MultiArray array;
+

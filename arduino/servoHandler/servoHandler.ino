@@ -11,8 +11,8 @@
 
 const int servoSum = 12;
 const int shotServoSum = 7;
-const int close_angle = 90;
-const int open_angle = 0;
+const int close_angle = 0;
+const int open_angle = 90;
 
 ros::NodeHandle  nh;
 std_msgs::Int16MultiArray array;
@@ -46,5 +46,5 @@ void setup() {
 
 void loop() {
   nh.spinOnce();
-  delay(100);
+  delay(10);
 }
