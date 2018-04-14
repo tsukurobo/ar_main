@@ -62,7 +62,7 @@ void joyCallback(const sensor_msgs::Joy::ConstPtr& joy){
 	btn3=joy->axes[5];//set front
 	btn4=joy->axes[5];//set back
 	btn5=joy->buttons[4];//prepare
-	btn6=joy->buttons[5];
+	btn6=joy->buttons[5];//close
 	if(btn0==1){
 		btn0param=1;
 	}
@@ -133,6 +133,7 @@ void set_front(){
 	ros::Duration(1.5).sleep();
 	
 	pick();
+	ros::Duration(1).sleep();
 
 	armState.data=ARM_RETURN;
 	num_pub.publish(armState);
@@ -144,7 +145,7 @@ void set_front(){
 	num_pub.publish(armState);
 	ROS_INFO("arm pass\n");
 	
-	ros::Duration(5).sleep();
+	ros::Duration(4.5).sleep();
 	
 	armState.data=ARM_RETURN;
 	num_pub.publish(armState);
@@ -152,7 +153,7 @@ void set_front(){
 	
 	free();
 	
-	ros::Duration(0.2).sleep();
+	ros::Duration(0.5).sleep();
 	
 	armState.data=ARM_INIT;
 	num_pub.publish(armState);
@@ -167,6 +168,7 @@ void set_back(){
 	ros::Duration(1.5).sleep();
 	
 	pick();
+	ros::Duration(1).sleep();
 	
 	armState.data=ARM_RETURN;
 	num_pub.publish(armState);
@@ -178,7 +180,7 @@ void set_back(){
 	num_pub.publish(armState);
 	ROS_INFO("arm pass\n");
 	
-	ros::Duration(5).sleep();
+	ros::Duration(4.5).sleep();
 	
 	armState.data=ARM_RETURN;
 	num_pub.publish(armState);
@@ -186,7 +188,7 @@ void set_back(){
 	
 	free();
 	
-	ros::Duration(0.2).sleep();
+	ros::Duration(0.5).sleep();
 	
 	armState.data=ARM_INIT;
 	num_pub.publish(armState);
@@ -197,6 +199,7 @@ void prepare(){
 	num_pub.publish(armState);
 	servoTask.data=SERVO_PREPARE;
 	servo_pub.publish(servoTask);
+	free();
 	ROS_INFO("prepare\n");
 }
 
@@ -229,6 +232,7 @@ void task() {
 	}
 	else if(btn5param==1&&btn5==0){
 	//move
+		free();
 		prepare();
 		btn5param=0;
 	}

@@ -16,7 +16,7 @@ ros::Publisher pub;
 std_msgs::Int8MultiArray array;
 std_msgs::Int8 motorState;
 int w[5]; 
-float hor,ver,tur;
+float hor,ver,tur,speed_fast,speed_slow;
 
 
 
@@ -24,6 +24,8 @@ void joyCallback(const sensor_msgs::Joy::ConstPtr& joy){
 	hor=joy->axes[0];
 	ver=joy->axes[1];
 	tur=joy->axes[3];
+	speed_slow=joy->buttons[6];
+	speed_fast=joy->buttons[7];
 }
 
 void calcMotorPower(float horizonal,float vertical,float turn) {
@@ -32,7 +34,7 @@ void calcMotorPower(float horizonal,float vertical,float turn) {
    * @param vertical: -1~1
    * @param turn: -1~1
    */
-	float x,y,tn,length,c=100,tg=0.1,t=10,maxw;
+	float x,y,tn,length,c=10,tg=0.1,t=5,maxw,gain_wheel2=1.5,gain_wheel4=1.1,slow=0.5,fast=1.5,weaker=0.7;
 		
 	length=sqrt(pow(horizonal,2)+pow(vertical,2));
 	x=horizonal*length*c;
@@ -49,9 +51,9 @@ void calcMotorPower(float horizonal,float vertical,float turn) {
 	if(maxw<90){
 		tn=turn*t;
 		w[1]=-x+y-tn;
-		w[2]=x+y+tn;
+		w[2]=(x+y+tn)*gain_wheel2;
 		w[3]=x+y-tn;
-		w[4]=-x+y+tn;
+		w[4]=(-x*weaker+y+tn)*gain_wheel4;
 	
 	
 	}
@@ -68,6 +70,17 @@ void calcMotorPower(float horizonal,float vertical,float turn) {
 			w[i]=100*w[i]/abs(w[i]);
 		}
 		else{
+		}
+	}
+	
+	if(speed_slow==1){
+		for(int i=1;i<5;i++){
+			w[i]=w[i]*slow;
+		}
+	}
+	else if(speed_fast==1){
+		for(int i=1;i<5;i++){
+			w[i]=w[i]*fast;
 		}
 	}
 	array.data.clear();

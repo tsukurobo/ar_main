@@ -144,6 +144,7 @@ void arm_catch_front(){
 	ros::Duration(1.5).sleep();
 	
 	arm_pick();
+	ros::Duration(1).sleep();
 	
 }
 void arm_catch_back(){
@@ -154,6 +155,7 @@ void arm_catch_back(){
 	ros::Duration(1.5).sleep();
 	
 	arm_pick();
+	ros::Duration(1).sleep();
 }
 
 void arm_pass(){
@@ -169,7 +171,7 @@ void arm_pass(){
 	num_pub.publish(armState);
 	ROS_INFO("arm pass\n");
 	
-	ros::Duration(5).sleep();
+	ros::Duration(4.5).sleep();
 	
 	armState.data=ARM_RETURN;
 	num_pub.publish(armState);
@@ -177,7 +179,7 @@ void arm_pass(){
 	
 	arm_free();
 	
-	ros::Duration(0.2).sleep();
+	ros::Duration(0.5).sleep();
 	
 	armState.data=ARM_INIT;
 	num_pub.publish(armState);
@@ -373,6 +375,7 @@ void chatterCallback(const std_msgs::String::ConstPtr& msg)
 
 void task() {
   if (state == PREPARE) {
+    arm_free();
     servoTask.data=SERVO_PREPARE;
     servo_pub.publish(servoTask);
     //pass

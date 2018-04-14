@@ -19,11 +19,11 @@
 
 
 #define DC2_INIT 0
-#define DC2_PASS 530
+#define DC2_PASS 500
 #define DC1_INIT 0
 #define DC1_PICK1 -1700
 #define DC1_PICK2 -6000
-#define DC1_PASS  -3500
+#define DC1_PASS  -6000
 
 
 volatile int pw[5]={0,0,0,0,0},w[6]={0,0,0,0,0,0};

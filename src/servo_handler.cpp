@@ -13,26 +13,35 @@ const int servoSum = 7;
 const int closeDeg = 0; // close deg
 const int openDeg = 90;   // open deg
 const int hz = 10;
-const int b = 0, c = 1, d = 2, e = 3, f = 4, g = 5, h = 6,pick_up=7,pick_down=8;
+const int b = 0, c = 1, d = 2, e = 3, f = 4, g = 5, h = 6,pick_up=7,pick_down=8,flag=9;
 const int delaySmall = 1000, delayMedium = 3000, delayLong = 1500, delayShot = 5000, delayReset = 3000, delay2000 = 2000;
 
 // inner values
 bool delaying = false; // for delay
 int delayCounter = 0;
 int state = SERVO_WAIT;
+int wait;
+
+//lop_rate
+ros::Rate loop_rate(hz);
 
 // ros values
 ros::Publisher pub;
 ros::Publisher servoPub;
+ros::Subscriber joy;
 ros::Subscriber servoSub;
 std_msgs::Int16MultiArray array;
 std_msgs::Int8 servop;
+
 // =========== callback ==========
 void servoTaskCallback(const std_msgs::Int8::ConstPtr& m){
   //ROS_INFO("stcb");
   state = m->data;
 }
 
+void joyCallback(const sensor_msgs::Joy::ConstPtr& joy){
+	wait=joy->buttons[1];
+}
 
 // ===========sub func==========
 void sendArr(int servoNo, int degree) {
@@ -107,10 +116,21 @@ void prepare() {
 void tz1(){
     static int mode = 0;
     if (mode == 0) {
+    //flagup
+      sOpen(flag);
+      delay(delaySmall);
+      
       ROS_INFO("tz1");
       // shot
       sOpen(d);
       delay(delayShot);
+      //flagdown
+      sClose(flag);
+      //wait4user
+      while(wait==0){
+      	ros::spinOnce();
+  	loop_rate.sleep();
+      }
       mode = 1;
     } else if (mode ==1) {
       // shot done
@@ -156,11 +176,21 @@ void tz1(){
 void tz2(){
     static int mode = 0;
     if (mode == 0) {
+     //flagup
+      sOpen(flag);
+      delay(delaySmall);
+      
       ROS_INFO("tz2");
       // shot
       sOpen(d);
       delay(delayShot);
-      mode = 1;
+      //flagdown
+      sClose(flag);
+      //wait4user
+      while(wait==0){
+      	ros::spinOnce();
+  	loop_rate.sleep();
+      }
     } else if (mode ==1) {
       // shot done
       sClose(d);
@@ -204,11 +234,21 @@ void tz2(){
 void tz3() {
     static int mode = 0;
     if (mode == 0) {
+      //flagup
+      sOpen(flag);
+      delay(delaySmall);
+      
       ROS_INFO("tz3");
       // shot
       sOpen(d);
       delay(delayShot);
-      mode = 1;
+      //flagdown
+      sClose(flag);
+      //wait4user
+      while(wait==0){
+      	ros::spinOnce();
+  	loop_rate.sleep();
+      }
     } else if (mode ==1) {
       // shot done
       sClose(d);
@@ -311,8 +351,8 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "servo_handler");
   ros::NodeHandle n;
-  ros::Rate loop_rate(hz);
   pub = n.advertise<std_msgs::Int16MultiArray>("servo_deg", 100);
+  joy = n.subscribe("joy",1000,joyCallback);
   servoPub = n.advertise<std_msgs::Int8>("servo_task", 100);
   servoSub = n.subscribe("servo_task", 100, servoTaskCallback);
   setup();
