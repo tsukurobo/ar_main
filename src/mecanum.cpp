@@ -11,8 +11,6 @@
 #include "conf.h"
 
 
-ros::NodeHandle n;
-ros::Rate loop_rate(10);
 
 
 // publishers
@@ -155,7 +153,6 @@ void set(){
 		set_length=calcset_length(vertical_gravity,horizonal_gravity);
 		calcMotorPower(set_degree,set_length,USE_FRONT_LRF,DO_NOT_USE_LINE);
 	  	ros::spinOnce();
-	  	loop_rate.sleep();
 	  	ros::Duration(0.1).sleep();
   		delayCount();
 	}
@@ -198,7 +195,6 @@ void startToPass1(){
   while(delaying){
   	calcMotorPower(-80, 1, USE_LEFT_LRF, DO_NOT_USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   	ros::Duration(0.1).sleep();
   	delayCount();
   }
@@ -209,7 +205,6 @@ void startToPass1(){
   while(line_param[1]!=0){
   	calcMotorPower(-80, 0.3, USE_LEFT_LRF, DO_NOT_USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   }
 } 
 
@@ -222,7 +217,6 @@ void pass1ToShot1(){
   while(delaying){
   	calcMotorPower(RIGHT, 1, DO_NOT_USE_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   	ros::Duration(0.1).sleep();
   	delayCount();
   }
@@ -233,7 +227,6 @@ void pass1ToShot1(){
   while(line_param[0]!=0){
   	calcMotorPower(RIGHT, 0.3, USE_FRONT_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   }
   
   set();
@@ -249,7 +242,6 @@ void shot1ToPass2(){
   while(delaying){
   	calcMotorPower(LEFT, 1, DO_NOT_USE_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   	ros::Duration(0.1).sleep();
   	delayCount();
   }
@@ -260,7 +252,6 @@ void shot1ToPass2(){
   while(line_param[3]!=0){
   	calcMotorPower(LEFT, 0.3, DO_NOT_USE_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   }
 }
 
@@ -273,7 +264,6 @@ void pass2ToShot2(){
   while(delaying){
   	calcMotorPower(-40, 1, USE_LEFT_LRF, DO_NOT_USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   	ros::Duration(0.1).sleep();
   	delayCount();
   }
@@ -285,7 +275,6 @@ void pass2ToShot2(){
   while(line_param[1]!=0){
   	calcMotorPower(-40, 0.3, USE_LEFT_LRF, DO_NOT_USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   }
   
   for(int i=0;i<10;i++){
@@ -296,7 +285,6 @@ void pass2ToShot2(){
   while(delaying){
   	calcMotorPower(RIGHT, 1, DO_NOT_USE_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   	ros::Duration(0.1).sleep();
   	delayCount();
   }
@@ -307,7 +295,6 @@ void pass2ToShot2(){
   while(line_param[0]!=0){
   	calcMotorPower(RIGHT, 0.3, USE_FRONT_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   }
   set();
 }
@@ -321,7 +308,6 @@ void shot2ToPass3(){
   while(delaying){
   	calcMotorPower(LEFT, 1, DO_NOT_USE_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   	ros::Duration(0.1).sleep();
   	delayCount();
   }
@@ -332,7 +318,6 @@ void shot2ToPass3(){
   while(line_param[0]!=0){
   	calcMotorPower(LEFT, 0.3, USE_FRONT_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   }
 }
 
@@ -345,7 +330,6 @@ void pass3ToShot3(){
   while(delaying){
   	calcMotorPower(RIGHT, 1, USE_LEFT_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   	ros::Duration(0.1).sleep();
   	delayCount();
   }
@@ -356,7 +340,6 @@ void pass3ToShot3(){
   while(line_param[1]!=0){
   	calcMotorPower(RIGHT, 0.3, USE_FRONT_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   }
 	set();
 }
@@ -369,7 +352,6 @@ void shot3ToPass3(){
   while(delaying){
   	calcMotorPower(LEFT, 1, DO_NOT_USE_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   	ros::Duration(0.1).sleep();
   	delayCount();
   }
@@ -380,7 +362,6 @@ void shot3ToPass3(){
   while(line_param[0]!=0){
   	calcMotorPower(LEFT, 0.3, DO_NOT_USE_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   }
 }
 void pass3ToShot2(){
@@ -392,7 +373,6 @@ void pass3ToShot2(){
   while(delaying){
   	calcMotorPower(RIGHT, 1, DO_NOT_USE_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   	ros::Duration(0.1).sleep();
   	delayCount();
   }
@@ -403,7 +383,6 @@ void pass3ToShot2(){
   while(line_param[1]!=0){
   	calcMotorPower(RIGHT, 0.3, USE_FRONT_LRF, USE_LINE);
   	ros::spinOnce();
-  	loop_rate.sleep();
   }
 	set();
 }
@@ -460,11 +439,13 @@ void move(){
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "mecanum_auto");
+  ros::NodeHandle n;
   pub = n.advertise<std_msgs::Int8MultiArray>("mecanum_motors", 100);
   state_pub = n.advertise<std_msgs::Int8>("state", 100);
   state_sub = n.subscribe("state",100,stateCallback);
   line_sub = n.subscribe("lineparam",100,lineCallback);
   lrf_sub = n.subscribe("lrfparam",100,lrfCallback);
+  ros::Rate loop_rate(10);
   
   while (ros::ok())
     {
