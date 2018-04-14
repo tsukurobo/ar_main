@@ -32,16 +32,36 @@ void calcMotorPower(float horizonal,float vertical,float turn) {
    * @param vertical: -1~1
    * @param turn: -1~1
    */
-	float x,y,tn,length,c=100,t=0.1;
-	tn=turn*t;	
+	float x,y,tn,length,c=100,tg=0.1,t=10,maxw;
+		
 	length=sqrt(pow(horizonal,2)+pow(vertical,2));
 	x=horizonal*length*c;
 	y=vertical*length*c;
+	for(int i=1;i<5;i++){
+		if(abs(w[i])>maxw){
+			maxw=abs(w[i]);
+		}
+		else{
+		}	
 	
-	w[1]=-x+y*(1-tn);
-	w[2]=x+y*(1+tn);
-	w[3]=x+y*(1-tn);
-	w[4]=-x+y*(1+tn);
+	}
+
+	if(maxw<90){
+		tn=turn*t;
+		w[1]=-x+y-tn;
+		w[2]=x+y+tn;
+		w[3]=x+y-tn;
+		w[4]=-x+y+tn;
+	
+	
+	}
+	else{
+		tn=turn*tg;
+		w[1]=-x+y*(1-tn);
+		w[2]=x+y*(1+tn);
+		w[3]=x+y*(1-tn);
+		w[4]=-x+y*(1+tn);
+	}
 	
 	for(int i=1;i<5;i++){
 		if(abs(w[i])>100){
