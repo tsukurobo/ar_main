@@ -1,3 +1,0 @@
-<launch>
-    <node pkg = "ar_main" name = "key_input1" type = "key_input"/>
-</launch>
