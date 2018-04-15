@@ -8,6 +8,7 @@
 #include "std_msgs/Int16MultiArray.h"
 #include "conf.h"
 
+
 // params
 const int servoSum = 7;
 const int closeDeg = 0; // close deg
@@ -21,7 +22,6 @@ bool delaying = false; // for delay
 int delayCounter = 0;
 int state = SERVO_WAIT;
 int wait;
-
 
 // ros values
 ros::Publisher pub;
@@ -125,6 +125,9 @@ void tz1(){
       //flagdown
       sClose(flag);
       //wait4user
+      while(wait==0){
+      	ros::spinOnce();
+      }
       mode = 1;
     } else if (mode ==1) {
       // shot done
@@ -180,6 +183,10 @@ void tz2(){
       delay(delayShot);
       //flagdown
       sClose(flag);
+      //wait4user
+      while(wait==0){
+      	ros::spinOnce();
+      }
     } else if (mode ==1) {
       // shot done
       sClose(d);
@@ -233,6 +240,10 @@ void tz3() {
       delay(delayShot);
       //flagdown
       sClose(flag);
+      //wait4user
+      while(wait==0){
+      	ros::spinOnce();
+      }
     } else if (mode ==1) {
       // shot done
       sClose(d);
@@ -340,7 +351,9 @@ int main(int argc, char **argv)
   joy = n.subscribe("joy",1000,joyCallback);
   servoPub = n.advertise<std_msgs::Int8>("servo_task", 100);
   servoSub = n.subscribe("servo_task", 100, servoTaskCallback);
+  ros::Rate loop_rate(hz);
   setup();
+  
   
   while (ros::ok())
     {
