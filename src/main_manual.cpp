@@ -146,7 +146,7 @@ void set_front(){
 	ROS_INFO("arm pass\n");
 	
 	//ros::Duration(4.5).sleep();
-	ros::Duration(15).sleep();
+	ros::Duration(10).sleep();
 	
 	armState.data=ARM_RETURN;
 	num_pub.publish(armState);
@@ -181,7 +181,7 @@ void set_back(){
 	num_pub.publish(armState);
 	ROS_INFO("arm pass\n");
 	
-	ros::Duration(15).sleep();
+	ros::Duration(10).sleep();
 	//4.5
 	
 	armState.data=ARM_RETURN;
@@ -197,11 +197,11 @@ void set_back(){
 	ROS_INFO("arm init\n");
 }
 void prepare(){
+	free();
 	armState.data=ARM_PREPARE;
 	num_pub.publish(armState);
 	servoTask.data=SERVO_PREPARE;
 	servo_pub.publish(servoTask);
-	free();
 	ROS_INFO("prepare\n");
 }
 

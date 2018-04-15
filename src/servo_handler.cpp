@@ -345,8 +345,7 @@ void task() {
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "servo_handler");
-  ros::NodeHandle n;
-  ros::Rate loop_rate(hz);  
+  ros::NodeHandle n; 
   pub = n.advertise<std_msgs::Int16MultiArray>("servo_deg", 100);
   joy = n.subscribe("joy",1000,joyCallback);
   servoPub = n.advertise<std_msgs::Int8>("servo_task", 100);
