@@ -23,7 +23,7 @@
 #define DC1_INIT 0
 #define DC1_PICK1 -1700
 #define DC1_PICK2 -5500
-#define DC1_PASS  -4300//-6000 
+#define DC1_PASS  -4500//-6000 
 const int maxPW = 15;
 const int spinMaxPW = 7;
 //===== end arm =====

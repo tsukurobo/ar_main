@@ -82,10 +82,16 @@ void setup() {
 
 void prepare() {
   // add pressure
-  static int mode = 0;
-  if (mode == 0) {
+  static int mode = -1;
+   if(mode==-1){
+   sendArr(7,30);
+   sendArr(8,30);
+   delay(delaySmall);
+   mode=0;
+   }
+   else if (mode == 0) {
     ROS_INFO("prepare");
-    sOpen(h);
+    sOpen(e);
     delay(delaySmall);
     mode = 1;
   } else if (mode == 1) {
@@ -97,13 +103,13 @@ void prepare() {
     delay(delayMedium);
     mode = 3;
   } else if (mode == 3) {
-    sClose(h);
+    sClose(e);
     sClose(f);
     delay(delaySmall);
     mode=4;
   }else if(mode==4){
-    sOpen(e);
-    mode = 0;
+    sOpen(h);
+    mode = -1;
     state = SERVO_WAIT;
     servop.data=state;
     servoPub.publish(servop);
@@ -132,12 +138,12 @@ void tz1(){
     } else if (mode ==1) {
       // shot done
       sClose(d);
-      sClose(e);
+      sClose(h);
       delay(delay2000);
       mode = 2;
     } else if (mode == 2) {
       // prepare exhaust
-      sOpen(h);
+      sOpen(e);
       delay(delaySmall);
       mode = 3;
     } else if ( mode == 3) {
@@ -148,12 +154,12 @@ void tz1(){
     } else if (mode == 4) {
       // reset done
       sClose(f);
-      sClose(h);
+      sClose(e);
       delay(delaySmall);
       mode = 5;
     } else if (mode == 5) {
       // prepare exhausting. close 0.45mp
-      sOpen(e);
+      sOpen(h);
       delay(500);
       mode = 6;
     } else if (mode == 6) {
@@ -190,12 +196,12 @@ void tz2(){
     } else if (mode ==1) {
       // shot done
       sClose(d);
-      sClose(e);
+      sClose(h);
       delay(delay2000);
       mode = 2;
     } else if (mode == 2) {
       // prepare exhaust
-      sOpen(h);
+      sOpen(e);
       delay(delaySmall);
       mode = 3;
     } else if ( mode == 3) {
@@ -209,8 +215,8 @@ void tz2(){
       delay(delay2000);
       mode = 5;
     } else if (mode == 5) {
-      sClose(h);
-      sOpen(e);
+      sClose(e);
+      sOpen(h);
       delay(delaySmall);
       mode = 6;
     } else if (mode == 6) {
@@ -251,7 +257,8 @@ void tz3() {
       mode = 2;
     } else if (mode == 2) {
       // prepare exhaust
-      sClose(e);
+      sClose(h);
+      sOpen(e);
       delay(delay2000);
       mode = 3;
     } else if ( mode == 3) {
@@ -265,7 +272,8 @@ void tz3() {
       delay(delay2000);
       mode = 5;
     } else if (mode == 5) {
-      sOpen(e);
+      sClose(e);
+      sOpen(h);
       mode = 0;
       state = SERVO_WAIT;
       servop.data=state;
