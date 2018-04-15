@@ -193,6 +193,7 @@ void tz2(){
       while(wait==0){
       	ros::spinOnce();
       }
+      mode = 1;
     } else if (mode ==1) {
       // shot done
       sClose(d);
@@ -250,6 +251,7 @@ void tz3() {
       while(wait==0){
       	ros::spinOnce();
       }
+      mode = 1;
     } else if (mode ==1) {
       // shot done
       sClose(d);
