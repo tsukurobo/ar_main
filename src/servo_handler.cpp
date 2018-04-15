@@ -22,8 +22,6 @@ int delayCounter = 0;
 int state = SERVO_WAIT;
 int wait;
 
-//lop_rate
-ros::Rate loop_rate(hz);
 
 // ros values
 ros::Publisher pub;
@@ -127,10 +125,6 @@ void tz1(){
       //flagdown
       sClose(flag);
       //wait4user
-      while(wait==0){
-      	ros::spinOnce();
-  	loop_rate.sleep();
-      }
       mode = 1;
     } else if (mode ==1) {
       // shot done
@@ -186,11 +180,6 @@ void tz2(){
       delay(delayShot);
       //flagdown
       sClose(flag);
-      //wait4user
-      while(wait==0){
-      	ros::spinOnce();
-  	loop_rate.sleep();
-      }
     } else if (mode ==1) {
       // shot done
       sClose(d);
@@ -244,11 +233,6 @@ void tz3() {
       delay(delayShot);
       //flagdown
       sClose(flag);
-      //wait4user
-      while(wait==0){
-      	ros::spinOnce();
-  	loop_rate.sleep();
-      }
     } else if (mode ==1) {
       // shot done
       sClose(d);
@@ -351,6 +335,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "servo_handler");
   ros::NodeHandle n;
+  ros::Rate loop_rate(hz);  
   pub = n.advertise<std_msgs::Int16MultiArray>("servo_deg", 100);
   joy = n.subscribe("joy",1000,joyCallback);
   servoPub = n.advertise<std_msgs::Int8>("servo_task", 100);

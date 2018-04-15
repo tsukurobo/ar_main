@@ -17,18 +17,22 @@
 #include "ise_motor_driver.h"
 #define datalength 4294967295
 
-
+//=====arm=====
 #define DC2_INIT 0
-#define DC2_PASS 500
+#define DC2_PASS 600 // spin
 #define DC1_INIT 0
 #define DC1_PICK1 -1700
-#define DC1_PICK2 -6000
-#define DC1_PASS  -6000
+#define DC1_PICK2 -5500
+#define DC1_PASS  -4300//-6000 
+const int maxPW = 15;
+const int spinMaxPW = 7;
+//===== end arm =====
 
 
 volatile int pw[5]={0,0,0,0,0},w[6]={0,0,0,0,0,0};
 long enc[5]={},Enc[5]={},Enc_a[5]={},Enc_b[5]={},n=14,armgoal[2];///18000
-double p_gain=1.5,i_gain=0.0,d_gain=0.01,e1[5]={},e2[5]={},e3[5]={},e4[5]={},pic_p=0.01,pic_i=0.00001,pic_d=0.0,roll_p=0.02,roll_i=0.00055,roll_d=0.01,a1[2]={},a2[2]={},a3[2]={},a4[2]={};
+double p_gain=1.5,i_gain=0.0,d_gain=0.01,e1[5]={},e2[5]={},e3[5]={},e4[5]={},pic_p=0.01,pic_i=0.00001,pic_d=0.0,roll_p=2,roll_i=0,roll_d=0.01,a1[2]={},a2[2]={},a3[2]={},a4[2]={};
+//roll_p=0.02, roll_i = 0.00055
 //0.95 2.4 0.4
 static int h=0,l=0;
 long plus=2000000000;
@@ -123,13 +127,20 @@ void calArms(){
   }
     armpw[0]=-(pic_p*a1[0]+pic_i*a2[0]+pic_d*a3[0]);
     armpw[1]=-(roll_p*a1[1]+roll_i*a2[1]+roll_d*a3[1]);
+    
+    
+  // set max pw.
   for(int i=0;i<2;i++){
-    if(abs(armpw[i])>100){
-      armpw[i]=100*armpw[i]/abs(armpw[i]);
+    if(abs(armpw[i])>maxPW){
+      armpw[i]=maxPW*armpw[i]/abs(armpw[i]);
     }
     else{
     }
   }
+  if(abs(armpw[1])>spinMaxPW){// max speed
+    armpw[1]=spinMaxPW*armpw[1]/abs(armpw[1]);
+  }
+  
   m5.setSpeed(armpw[0]);
   m6.setSpeed(armpw[1]);
   enc_pub.publish(&armenc);

@@ -145,7 +145,8 @@ void set_front(){
 	num_pub.publish(armState);
 	ROS_INFO("arm pass\n");
 	
-	ros::Duration(4.5).sleep();
+	//ros::Duration(4.5).sleep();
+	ros::Duration(15).sleep();
 	
 	armState.data=ARM_RETURN;
 	num_pub.publish(armState);
@@ -180,7 +181,8 @@ void set_back(){
 	num_pub.publish(armState);
 	ROS_INFO("arm pass\n");
 	
-	ros::Duration(4.5).sleep();
+	ros::Duration(15).sleep();
+	//4.5
 	
 	armState.data=ARM_RETURN;
 	num_pub.publish(armState);
