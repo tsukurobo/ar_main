@@ -57,7 +57,7 @@ int b1 = 0;
 // ====================ros callbacks====================
 
 void joyCallback(const sensor_msgs::Joy::ConstPtr& joy){
-        b1 = joy->buttons[1];//tmp
+        b1 = joy->buttons[11];//tmp
 	btn0=joy->buttons[0];//shot 1
 	btn1=joy->buttons[2];//shot 2
 	btn2=joy->buttons[3];//shot 3
