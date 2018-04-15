@@ -28,7 +28,7 @@ std_msgs::Int8 armState;
 
 ros::Duration five_seconds(5, 0);
 
-
+int tmp_state = 0;
 
 
 
@@ -52,14 +52,12 @@ void delay(int ms) {
 ros::Publisher servo_pub;
 ros::Publisher num_pub;
 ros::Subscriber joy;
-int wait = 0;
-
+int b1 = 0;
 
 // ====================ros callbacks====================
 
 void joyCallback(const sensor_msgs::Joy::ConstPtr& joy){
-	wait=joy->buttons[1];
-	
+        b1 = joy->buttons[1];//tmp
 	btn0=joy->buttons[0];//shot 1
 	btn1=joy->buttons[2];//shot 2
 	btn2=joy->buttons[3];//shot 3
@@ -135,9 +133,10 @@ void set_front(){
 	ROS_INFO("arm front\n");
 	
 	ros::Duration(1.5).sleep();
-        while(wait==0){
-         	ros::spinOnce();
+        while(b1==0){
+        	ros::spinOnce();
         }
+	
 	
 	pick();
 	ros::Duration(1).sleep();
@@ -146,7 +145,7 @@ void set_front(){
 	num_pub.publish(armState);
 	ROS_INFO("arm return\n");
 	
-	ros::Duration(1.5).sleep();
+	ros::Duration(1.5).sleep();	
 	
 	armState.data=ARM_PASS;
 	num_pub.publish(armState);
@@ -174,8 +173,8 @@ void set_back(){
 	ROS_INFO("arm back\n");
 	
 	ros::Duration(1.5).sleep();
-        while(wait==0){
-         	ros::spinOnce();
+        while(b1==0){
+        	ros::spinOnce();
         }
 	
 	
