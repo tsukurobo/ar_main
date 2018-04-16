@@ -87,7 +87,7 @@ void calcMotorPower(float degree,float length,int lrf,int line) {
    * @param lrf: 0 or 1 0:flont 1:left
    *@oparam line 0 or 1 1:use
    */
-	float x,y,tn,dt,radian,c=15,t=5,maxw,gain_wheel2=1.5,gain_wheel4=1.1;
+	float x,y,tn,dt,radian,c=15,t=10,maxw,gain_wheel2=1.5,gain_wheel4=1.1;
 	//c<100-t
 	
 	//ラインに沿って進むとき

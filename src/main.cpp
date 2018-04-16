@@ -84,9 +84,9 @@ void keyCallback(const std_msgs::Char::ConstPtr& m) {
   }
 }
 
-void imageCallback(const std_msgs::Int8MultiArray::ConstPtr& image){
+void imageCallback(const std_msgs::Int32MultiArray::ConstPtr& image){
     int loop = 0;
-    for(std::vector<int8_t>::const_iterator it = image->data.begin(); it != image->data.end(); ++it)
+    for(std::vector<int32_t>::const_iterator it = image->data.begin(); it != image->data.end(); ++it)
     {
         image_param[loop] = *it;
         loop++;

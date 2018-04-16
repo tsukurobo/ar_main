@@ -230,6 +230,9 @@ target_link_libraries(servo_handler ${catkin_LIBRARIES})
 add_executable(catch src/catch.cpp)
 target_link_libraries(catch ${catkin_LIBRARIES})
 
+add_executable(setup src/setup.cpp)
+target_link_libraries(setup ${catkin_LIBRARIES})
+
 find_package( OpenCV REQUIRED )
 include_directories(  ${catkin_INCLUDE_DIRS}  ${OpenCV_INCLUDE_DIRS} )
 add_executable(ar_image src/ar_image.cpp)
