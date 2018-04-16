@@ -105,7 +105,7 @@ void Callback(const std_msgs::Int8& a){
 ros::Publisher wparam("wparam", &arrayp);
 ros::Publisher arm_pub("armp", &armp);
 ros::Publisher enc_pub("armenc", &armenc);
-ros::Subscriber<std_msgs::Int8MultiArray>sub("array",messageCb);
+ros::Subscriber<std_msgs::Int8MultiArray>sub("mecanum_motors",messageCb);
 ros::Subscriber<std_msgs::Int8> num("num",Callback);
 //////////////////////////////////////////////
 

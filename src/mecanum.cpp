@@ -18,7 +18,7 @@
 ros::Subscriber state_sub;
 ros::Subscriber line_sub;
 ros::Subscriber lrf_sub;
-ros::Publisher pub;
+ros::Publisher mecanum_pub;
 ros::Publisher state_pub;
 std_msgs::Int8MultiArray array;
 std_msgs::Int8 motorState;
@@ -87,7 +87,8 @@ void calcMotorPower(float degree,float length,int lrf,int line) {
    * @param lrf: 0 or 1 0:flont 1:left
    *@oparam line 0 or 1 1:use
    */
-	float x,y,tn,dt,radian,c=48,t=25;
+	float x,y,tn,dt,radian,c=15,t=5,maxw,gain_wheel2=1.5,gain_wheel4=1.1;
+	//c<100-t
 	
 	//ラインに沿って進むとき
 	if(line == USE_LINE){
@@ -113,6 +114,9 @@ void calcMotorPower(float degree,float length,int lrf,int line) {
 	w[3]=-x+y-tn;
 	w[4]=x+y+tn;
 	
+	w[2]=w[2]*gain_wheel2;
+	w[4]=w[4]*gain_wheel4;
+	
 	for(int i=1;i<5;i++){
 		if(abs(w[i])>100){
 			w[i]=100*w[i]/abs(w[i]);
@@ -125,7 +129,7 @@ void calcMotorPower(float degree,float length,int lrf,int line) {
 	array.data.push_back(w[2]);
 	array.data.push_back(w[3]);
 	array.data.push_back(w[4]);
-	pub.publish(array);
+	mecanum_pub.publish(array);
 }
 
 void delayCount() {
@@ -440,7 +444,7 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "mecanum_auto");
   ros::NodeHandle n;
-  pub = n.advertise<std_msgs::Int8MultiArray>("mecanum_motors", 100);
+  mecanum_pub = n.advertise<std_msgs::Int8MultiArray>("mecanum_motors", 100);
   state_pub = n.advertise<std_msgs::Int8>("state", 100);
   state_sub = n.subscribe("state",100,stateCallback);
   line_sub = n.subscribe("lineparam",100,lineCallback);

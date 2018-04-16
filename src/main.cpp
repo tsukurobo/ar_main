@@ -34,7 +34,7 @@ servo_pub.pub(servoTask);
 // ====================definitions====================
 
 int state = PREPARE;
-int image_param[2];
+int image_param[4];
 float distance=300, lrfparam[6]; 
 int delayCounter = 0;
 bool delaying = false;
@@ -264,16 +264,16 @@ void pass2() {
 
 	//watch and select
 	//ok
-	if(image_param[1]==1&&image_param[0]==1){
+	if(image_param[0]==1&&image_param[1]==1){
 		state=nextTask();
 	}
 	//far
-	else if(image_param[0]==0&&image_param[0]==1){
+	else if(image_param[0]==0&&image_param[1]==1){
 		state=nextTask(4);
 	}
 	
 	//near
-	else if(image_param[0]==1&&image_param[0]==0){
+	else if(image_param[0]==1&&image_param[1]==0){
 		state=nextTask(4);
 	}
 }
@@ -320,16 +320,16 @@ void pass3() {
 
 	//watch and select
 	//ok
-	if(image_param[1]==1&&image_param[0]==1){
+	if(image_param[0]==1&&image_param[1]==1){
 		state=nextTask();
 	}
 	//far
-	else if(image_param[0]==0&&image_param[0]==1){
+	else if(image_param[0]==0&&image_param[1]==1){
 		state=nextTask(17);
 	}
 	
 	//near
-	else if(image_param[0]==1&&image_param[0]==0){
+	else if(image_param[0]==1&&image_param[1]==0){
 		state=nextTask(17);
 	}
 }
@@ -427,7 +427,7 @@ int main(int argc, char **argv)
   num_pub = n.advertise<std_msgs::Int8>("num", 100);
   state_sub = n.subscribe("state",100,stateCallback);
   key_sub = n.subscribe("key", 1000, keyCallback);
-  image_sub = n.subscribe("image",100,imageCallback);
+  image_sub = n.subscribe("image_param",100,imageCallback);
   servo_sub = n.subscribe("servo_task",100,servoCallback);
   lrf_sub = n.subscribe("lrfparam",100,lrfCallback);
   

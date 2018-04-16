@@ -7,22 +7,22 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "opencv/highgui.h"
-#include "std_msgs/Int8.h"
+#include "std_msgs/Int32.h"
+#include "std_msgs/Int32MultiArray.h"
 #include "std_msgs/MultiArrayLayout.h"
 #include "std_msgs/MultiArrayDimension.h"
-#include "std_msgs/Int8MultiArray.h"
 #include <stdlib.h>
 #include <vector>
 static const std::string OPENCV_WINDOW = "Image window";
-static int count[2];
+static int count[3];
 //取りだす色の下限(h,s,v)
 static const int GL[3]={65,30, 30},YL[3]={15, 5, 30},BL[3]={110, 10, 50},RL1[3]={0, 10, 30},RL2[3]={160, 10, 30}; 
 //取りだす色の上限(h,s,v)
 static const int GU[3]={95, 255, 255},YU[3]={50, 255, 255},BU[3]={150, 255, 255},RU1[3]={10, 255, 255},RU2[3]={180, 255, 255};
 
-float  x[2];
-float y[2];
-int bit[2];
+float  x[3];
+float y[3];
+int bit[3];
 //c コントラスト調整値           　g　ガンマ補正値
 //  色くっきり←5→淡く(白黒)       暗く←1→明るく
 float c=4.8f,g=0.9f;
@@ -31,7 +31,7 @@ class ImageConverter
   ros::NodeHandle nh_;
   image_transport::ImageTransport it_;
   image_transport::Subscriber image_sub_;
-  ros::Publisher pub = nh_.advertise<std_msgs::Int8MultiArray>("image", 100);
+  ros::Publisher image_pub = nh_.advertise<std_msgs::Int32MultiArray>("image_param", 100);
   
 
 public:
@@ -73,7 +73,7 @@ ImageConverter()
     }
 
     //（使うものの宣言？）
-    cv::Mat hsv_image, color_maskB,color_maskR, color_maskR1, color_maskR2;
+    cv::Mat hsv_image,color_maskG,color_maskB,color_maskR, color_maskR1, color_maskR2;
     std::vector<cv::Mat> planes;
 
     // cv_ptrをRGB表色系からHSV表色系へ変換して、hsv_imageに格納
@@ -83,7 +83,7 @@ ImageConverter()
 
 
 
-    
+    	cv::Mat hsv_imageG;
 	cv::Mat hsv_imageB;
 	cv::Mat hsv_imageR;
 
@@ -164,6 +164,9 @@ ImageConverter()
 	//赤色を見る範囲
 	cv::Rect range_Red(0, 0, 640,480);
 	cv::Mat hsv_Red=hsv(range_Red);
+	
+	cv::Rect range_Green(0, 0, 640,50);
+	cv::Mat hsv_Green=hsv(range_Green);
 
 
 
@@ -172,6 +175,7 @@ ImageConverter()
     // hsv=｛色相(Hue), 彩度(Saturation), 明暗(Value, brightness)｝ 
     // 指定した範囲の色でマスク画像color_mask(CV_8U:符号なし8ビット整数)を生成  
     // マスク画像は指定した範囲の色に該当する要素は255(8ビットすべて1)、それ以外は0
+    cv::inRange(hsv_Green, cv::Scalar(GL[0], GL[1], GL[2], 0) , cv::Scalar(GU[0], GU[1], GU[2], 0), color_maskG);  
     cv::inRange(hsv_Blue, cv::Scalar(BL[0], BL[1], BL[2], 0) , cv::Scalar(BU[0], BU[1], BU[2], 0), color_maskB);    
     cv::inRange(hsv_Red, cv::Scalar(RL1[0], RL1[1], RL1[2], 0) , cv::Scalar(RU1[0], RU1[1], RU1[2], 0), color_maskR1); 
     cv::inRange(hsv_Red, cv::Scalar(RL2[0], RL2[1], RL2[2], 0) , cv::Scalar(RU2[0], RU2[1], RU2[2], 0), color_maskR2);
@@ -204,39 +208,57 @@ ImageConverter()
 	else{
 		bit[1]=0;
 	}
+	
+	count[2] = cv::countNonZero(color_maskG);
+	cv::Mat img3 = color_maskG.clone();
+	cv::Moments mu3 = moments(img3,false);
+	x[2]= mu3.m10/mu3.m00;
+	y[2]=mu3.m01/mu3.m00;
+	if(count[2]>50){
+		bit[2]=1;
+	}
+	else{
+		bit[2]=0;
+	}
 
-	cv::Mat cv_imageB,cv_imageR;
+
+	cv::Mat cv_imageB,cv_imageR,cv_imageG;
     // ビット毎の論理積。マスク画像は指定した範囲以外は0で、指定範囲の要素は255なので、ビット毎の論理積を適用すると、指定した範囲の色に対応する要素はそのままで、他は0になる。
     cv::bitwise_and(hsv_Blue, hsv_Blue, cv_imageB, color_maskB);
     cv::bitwise_and(hsv_Red, hsv_Red, cv_imageR, color_maskR);
+    cv::bitwise_and(hsv_Green, hsv_Green, cv_imageG, color_maskG);
     //マスク画像とhsv_Blueに対し、ビットごとに論理積を適用。これをcv_imageBに格納
 
 
 //各画像のサイズを変更
 
     // 画像サイズ指定
-    cv::Mat cv_half_image,cv_half_imageB, cv_half_imageR;
+    cv::Mat cv_half_image,cv_half_imageB, cv_half_imageR, cv_half_imageG;
     cv::resize(cv_ptr->image, cv_half_image,cv::Size(),1.0,1.0); 
     cv::resize(cv_imageB, cv_half_imageB,cv::Size(),1.0,1.0);
     cv::resize(cv_imageR, cv_half_imageR,cv::Size(),1.0,1.0);
+    cv::resize(cv_imageG, cv_half_imageG,cv::Size(),1.0,1.0);
 
 //ウィンドウ表示
     // ウインドウ表示                  
     cv::cvtColor(cv_half_imageB, cv_half_imageB, CV_HSV2BGR);  
-    cv::cvtColor(cv_half_imageR, cv_half_imageR, CV_HSV2BGR);                                                     
+    cv::cvtColor(cv_half_imageR, cv_half_imageR, CV_HSV2BGR);  
+    cv::cvtColor(cv_half_imageG, cv_half_imageG, CV_HSV2BGR);                                                     
     //cv::imshow("Original Image", cv_half_image);
     cv::imshow("Brue Image", cv_half_imageB);
     cv::imshow("Red Image", cv_half_imageR);
+    cv::imshow("Green Image", cv_half_imageG);
     cv::waitKey(3);
 
 
-	std_msgs::Int8MultiArray image_param;
-	image_param.data.clear();
-	for(int j=0;j<2;j++){
-		image_param.data.push_back(bit[j]);
+	std_msgs::Int32MultiArray params;
+	params.data.clear();
+	for(int j=0;j<3;j++){
+		params.data.push_back(bit[j]);
 	}
-	pub.publish(image_param);
-	ROS_INFO("B_bit=%d R_bit=%d \nB_x=%f,B_y=%f,B_value=%d,R_x=%f,R_y=%f,R_value=%d",bit[0],bit[1],x[0],y[0],count[0],x[1],y[1],count[1]);
+	params.data.push_back(x[2]);
+	image_pub.publish(params);
+	ROS_INFO("B_bit=%d R_bit=%d G_bit=%d \nB_x=%f,B_y=%f,B_value=%d,R_x=%f,R_y=%f,R_value=%d",bit[0],bit[1],bit[2],x[0],y[0],count[0],x[1],y[1],count[1]);
 
   }
 };

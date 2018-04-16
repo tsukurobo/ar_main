@@ -15,7 +15,7 @@ const int closeDeg = 0; // close deg
 const int openDeg = 90;   // open deg
 const int hz = 10;
 const int b = 0, c = 1, d = 2, e = 3, f = 4, g = 5, h = 6,pick_up=7,pick_down=8,flag=9;
-const int delaySmall = 1000, delayMedium = 3000, delayLong = 1500, delayShot = 5000, delayReset = 3000, delay2000 = 2000;
+const int delaySmall = 1000, delayMedium = 3000, delayLong = 1500, delayShot = 1000, delayReset = 3000, delay2000 = 2000;
 
 // inner values
 bool delaying = false; // for delay
