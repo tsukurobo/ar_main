@@ -171,7 +171,7 @@ void arm_pass(){
 	num_pub.publish(armState);
 	ROS_INFO("arm pass\n");
 	
-	ros::Duration(4.5).sleep();
+	ros::Duration(8).sleep();
 	
 	armState.data=ARM_RETURN;
 	num_pub.publish(armState);

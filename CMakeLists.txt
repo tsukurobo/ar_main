@@ -227,9 +227,6 @@ target_link_libraries(mecanum_nlrf ${catkin_LIBRARIES})
 add_executable(servo_handler src/servo_handler.cpp)
 target_link_libraries(servo_handler ${catkin_LIBRARIES})
 
-add_executable(catch src/catch.cpp)
-target_link_libraries(catch ${catkin_LIBRARIES})
-
 add_executable(setup src/setup.cpp)
 target_link_libraries(setup ${catkin_LIBRARIES})
 

@@ -1,5 +1,5 @@
 <launch>
-<!--    <node pkg = "joy" name = "joy" type = "joy_node"/> -->
+    <node pkg = "joy" name = "joy" type = "joy_node"/> 
     <node pkg = "ar_main" name = "main_manual" type = "main_manual"/>
     <node pkg = "ar_main" name = "mecanum_manual" type = "mecanum_manual"/>
     <node pkg = "ar_main" name = "servo_handler" type = "servo_handler"/>
